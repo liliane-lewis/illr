@@ -1,0 +1,18 @@
+#Terminais # teste 4 - FNC
+[ a ]
+[ b ]
+#Variaveis
+[ S ]
+[ Y ]
+[ Z ]
+#Inicial
+[ S ]
+#Regras
+[ S ] > [ a ] [ Y ] [ b ] [ Z ]
+[ S ] > [ a ] [ b ] [ Z ]
+[ S ] > [ a ] [ Y ] [ b ]
+[ S ] > [ a ] [ b ]
+[ Y ] > [ a ] [ Y ]
+[ Y ] > [ a ]
+[ Z ] > [ b ] [ Z ]
+[ Z ] > [ b ]

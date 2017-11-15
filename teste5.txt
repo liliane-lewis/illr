@@ -1,0 +1,14 @@
+#Terminais # teste 5 - Earley - w > aab
+[ a ]
+[ b ]
+#Variaveis
+[ S ]
+[ B ]
+#Inicial
+[ S ]
+#Regras
+[ S ] > [ a ] [ S ] [ b ]
+[ S ] > [ a ] [ B ]
+[ S ] > [ a ]
+[ B ] > [ b ] [ B ]
+[ B ] > [ b ]

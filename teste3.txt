@@ -1,0 +1,17 @@
+#Terminais # teste 3 - FNC
+[ a ]
+[ b ]
+#Variaveis
+[ S ]
+[ A ]
+#Inicial
+[ S ]
+#Regras
+[ S ] > [ A ] [ b ] [ A ]
+[ S ] > [ A ] [ b ]
+[ S ] > [ b ] [ A ]
+[ S ] > [ b ]
+[ S ] > [ A ] [ a ]
+[ S ] > [ a ]
+[ A ] > [ A ] [ a ]
+[ A ] > [ a ]

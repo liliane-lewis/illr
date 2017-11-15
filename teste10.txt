@@ -1,0 +1,9 @@
+#Terminais # teste 9 - Earley - w > aaaa
+[ a ]
+#Variaveis
+[ X ]
+#Inicial
+[ X ]
+#Regras
+[ X ] > [ X ] [ X ]
+[ X ] > [ a ]

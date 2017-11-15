@@ -1,0 +1,28 @@
+#Terminais # teste 8 - Earley - w > denver called mary called john
+[ john ]
+[ mary ]
+[ denver ]
+[ called ]
+[ from ]
+#Variaveis
+[ S ]
+[ NP ]
+[ VP ]
+[ PP ]
+[ NOUN ]
+[ VERB ]
+[ PREP ]
+#Inicial
+[ S ]
+#Regras
+[ S ] > [ NP ] [ VP ]
+[ NP ] > [ NP ] [ PP ]
+[ NP ] > [ NOUN ]
+[ VP ] > [ VERB ] [ NP ]
+[ VP ] > [ VP ] [ PP ]
+[ PP ] > [ PREP ] [ NP ]
+[ NOUN ] > [ john ]
+[ NOUN ] > [ mary ]
+[ NOUN ] > [ denver ]
+[ VERB ] > [ called ]
+[ PREP ] > [ from ]
