@@ -1,10 +1,13 @@
 #usando python 3.6
 #!/usr/bin/python
 #-*- coding: ISO-8859-1 -*-
-# -*- coding: UTF-8 -*-
+#-*- coding: UTF-8 -*-
 #Trabalho LINGUAGENS FORMAIS E AUTOMATOS - Parte 1
 
-import sys, os, re, msvcrt, copy
+import sys, os, re
+import msvcrt 
+import copy
+
 
 Terminais = []
 Variaveis = []
@@ -15,18 +18,23 @@ listaT = []
 listaV = []
 x = input('Informe o nome do arquivo a ser usado\n')
 arq = open(x, 'r')
-todas_linhas = arq.readlines() #string que contém todas as linhas do arquivo
+todas_linhas = arq.readlines() #string que contem todas as linhas do arquivo
 cc = 0 #controle de cabecalho (sessao) para leitura do arquivo
 
 class Regra: #classe de Regras
 
-    def __init__(self, variavel, producoes): #ao definir uma classe, passar como parâmetro a variável e sua lista de produções
+    def __init__(self, variavel, producoes): #ao definir uma classe, passar como parametro a variavel e sua lista de producoes
         self.var = variavel
         self.prod = producoes
 
 
 def clear():
-    os.system("cls")
+#    os.system("clear")
+    print (os.name)
+    if os.name == 'windows':
+        os.system("cls")
+    elif os.name == 'posix':
+        os.system("clear")
 
 def voltar():
     voltar = str(input('\n\nTecle 9 para voltar ou qualquer tecla para sair: '))
