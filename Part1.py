@@ -17,6 +17,8 @@ l_Regras = [] #lista de Regras criadas
 listaT = []
 listaV = []
 x = input('Informe o nome do arquivo a ser usado\n')
+sentenca = input('Informe uma sentenca\n')
+
 arq = open(x, 'r')
 todas_linhas = arq.readlines() #string que contem todas as linhas do arquivo
 cc = 0 #controle de cabecalho (sessao) para leitura do arquivo
