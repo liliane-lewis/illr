@@ -31,7 +31,7 @@ class Regra: #classe de Regras
 def clear():
 #    os.system("clear")
     print (os.name)
-    if os.name == 'windows':
+    if os.name == 'nt':
         os.system("cls")
     elif os.name == 'posix':
         os.system("clear")
