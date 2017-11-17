@@ -5,7 +5,7 @@
 #Trabalho LINGUAGENS FORMAIS E AUTOMATOS - Parte 1
 
 import sys, os, re
-import msvcrt 
+#import msvcrt 
 import copy
 
 
