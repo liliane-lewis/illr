@@ -29,7 +29,7 @@ class Regra: #classe de Regras
         self.var = variavel
         self.prod = producoes
 
-def simplifica():
+def simplificacao():
     #---- Ordem de simplificação                          ----"
     #---- Exclusão de produções vazias                    ----"
     # V eh a palavra vazia.
@@ -206,7 +206,7 @@ for linha in todas_linhas:
 #Variaveis para a simplificação
 Variaveis_simple = copy.deepcopy(Variaveis) #lista Variaveis para ser modificada apos algoritmo de simplificacao
 l_Regras_simple = copy.deepcopy(l_Regras) #lista l_Regras para ser modificada apos algoritmo de simplificacao
-simplifica()
+simplificacao()
 #intro()
 menu_inicial()
 
