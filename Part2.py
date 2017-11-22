@@ -72,7 +72,55 @@ def simplificacao():
                         l_Regras_simple.append(regra_nova)
     
     #---- Exclusão das produções que substituem variáveis ----"
+
+
     #---- Exclusão dos simbolos inúteis                   ----"
+    #---- Dividido em duas etapas                         ----"
+    #---- Etapa 1: qualquer variável gera terminais       ----"
+    #V1 = {}
+    controleEtapa1 = 0
+    V1 = []
+    print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controleEtapa1))
+    print('V1 = { ', end='')
+    for variavel in V1:
+        print(variavel)
+    print('}')
+    #repita V1 = V1 U { A | A -> a E P e a E (T U V1)* } até que o cardinal de V1 não aumente
+    while True:
+        contagem_inicial = len(V1)
+        for variavel in Variaveis_simple: 
+            if variavel not in V1:
+                for regra in l_Regras_simple:
+                    if regra.var == variavel: #A -> a E P
+                        anexar_variavel = True
+                        for prod in regra.prod:
+                            if prod not in Terminais and prod not in V1:
+                                anexar_variavel = False
+                        if anexar_variavel:
+                            V1.append(variavel)
+        controleEtapa1 += 1
+        print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controleEtapa1))
+        print('V1 = { ', end='')
+        for variavel in V1:
+            print(variavel + ' ', end='')
+        print('}')
+        if contagem_inicial == len(V1):
+            break
+    print('Removendo regras que contém variáveis que não estão em V1')
+    #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
+    for regra in l_Regras_simple:
+        remover_regra = False
+        for prod in regra.prod:
+            if prod not in Terminais and prod not in V1:
+                remover_regra = True
+        if remover_regra:
+        	l_Regras_simple.remove(regra)
+    
+    exibe_simplificacao()
+    print('Fim da etapa 1 da exclusão de símbolos inúteis.')
+    #---- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial ----""
+
+
 
 def exibe_simplificacao():
  print('\nSimplificacao: ')
@@ -153,6 +201,35 @@ def menu_leitor():
     elif opcao_menu == '9':
         menu_inicial()
 
+def exibe_gramatica():
+	print('\nTerminais: ',end='')
+	for i in range(len(Terminais)):
+		if i != (len(Terminais) - 1):
+			print(Terminais[i] + ', ',end='')
+		else:
+			print(Terminais[i])
+
+	print('\nVariaveis: ',end='')
+	for i in range(len(Variaveis)):
+		if i != (len(Variaveis) - 1):
+			print(Variaveis[i] + ', ',end='')
+		else:
+			print(Variaveis[i])
+
+	print('\nSimbolo inicial: ',end='')
+	for i in range(len(Inicial)):
+		print(Inicial[i])
+
+	print('\nRegras:')
+	for i in range(len(l_Regras)):
+		variavel = l_Regras[i].var
+		producoes = l_Regras[i].prod
+		print('')
+		print(variavel,end='')
+		print(' -> ',end='')
+		for j in range(len(producoes)):
+			print(producoes[j],end='')
+	print('')
 for linha in todas_linhas:
 
     #Para a linha atual, elimina todos espaços em branco, colchetes e quebras de linha indesejadas
@@ -206,9 +283,10 @@ for linha in todas_linhas:
 #Variaveis para a simplificação
 Variaveis_simple = copy.deepcopy(Variaveis) #lista Variaveis para ser modificada apos algoritmo de simplificacao
 l_Regras_simple = copy.deepcopy(l_Regras) #lista l_Regras para ser modificada apos algoritmo de simplificacao
-simplificacao()
-#intro()
-menu_inicial()
 
+#intro()
+#menu_inicial()
+exibe_gramatica()
+simplificacao()
 arq.close()
 
