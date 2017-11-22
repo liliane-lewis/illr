@@ -29,7 +29,7 @@ class Regra: #classe de Regras
         self.var = variavel
         self.prod = producoes
 
-def simplificacao():
+def simplifica():
     #---- Ordem de simplificação                          ----"
     #---- Exclusão de produções vazias                    ----"
     # V eh a palavra vazia.
@@ -72,113 +72,150 @@ def simplificacao():
                         l_Regras_simple.append(regra_nova)
     
     #---- Exclusão das produções que substituem variáveis ----"
+    for i in range(len(l_Regras_simple)):
+        if len(l_Regras_simple[i].prod) == 1:
+            if l_Regras_simple[i].prod[0] in Variaveis_simple:
+                for j in range(len(l_Regras_simple)):
+                    if l_Regras_simple[j].var == l_Regras_simple[i].prod[0]:
+                        nova_regra = Regra(l_Regras_simple[i].var,l_Regras_simple[j].prod)
+                        l_Regras_simple.append(nova_regra)
+    regras_excluir = []  # guarda os indices das regras com producoes unitarias, para serem excluidas depois
+    n_excluidos = 0
+    for e in range(len(l_Regras_simple)): #guarda em regras_excluir os indices de l_Regras_simple a serem removidos
+        if (len(l_Regras_simple[e].prod) == 1):
+            if l_Regras_simple[e].prod[0] in Variaveis_simple:
+                regras_excluir.append(e)
 
-
+    for r in range(len(regras_excluir)): #exclui todas regras com producao unitaria (produz uma Variavel)
+        if n_excluidos == 0:
+            l_Regras_simple.remove(l_Regras_simple[regras_excluir[r]])
+            n_excluidos = n_excluidos + 1
+        else:
+            l_Regras_simple.remove(l_Regras_simple[regras_excluir[r]-n_excluidos])
+            n_excluidos = n_excluidos + 1
     #---- Exclusão dos simbolos inúteis                   ----"
-    #---- Dividido em duas etapas                         ----"
-    #---- Etapa 1: qualquer variável gera terminais       ----"
-    #V1 = {}
-    controle_etapa1 = 0
-    V1 = []
-    print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controle_etapa1))
-    print('V1 = { ', end='')
-    for variavel in V1:
-        print(variavel)
-    print('}')
-    #repita V1 = V1 U { A | A -> α E P e α E (T U V1)* } até que o cardinal de V1 não aumente
-    while True:
-        contagem_inicial = len(V1)
-        for variavel in Variaveis_simple: 
-            if variavel not in V1:
-                for regra in l_Regras_simple:
-                    if regra.var == variavel: #A -> α E P
-                        anexar_variavel = True
-                        for prod in regra.prod:
-                            if prod not in Terminais and prod not in V1: # A -> α E (T U V1)*
-                                anexar_variavel = False
-                        if anexar_variavel:
-                            V1.append(variavel)
-        controle_etapa1 += 1
-        print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controle_etapa1))
-        print('V1 = { ', end='')
-        for variavel in V1:
-            print(variavel + ' ', end='')
-        print('}')
-        if contagem_inicial == len(V1):
-            break
-    print('Removendo regras que contém variáveis que não estão em V1')
-    #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
-    for regra in l_Regras_simple:
-        remover_regra = False
-        for prod in regra.prod:
-            if prod not in Terminais and prod not in V1:
-                remover_regra = True
-        if remover_regra:
-        	l_Regras_simple.remove(regra)
-    
-    exibe_simplificacao()
-    print(' ')
-    print('Fim da etapa 1 da exclusão de símbolos inúteis.')
-    #---- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial ----""
-    # T2 = {}
-    # V2 = { S }
-    # Repita: 
-    # V2 = V2 U { A | X -> α A β E P1, X E V2}
-    # T2 = T2 U { a | X -> α a β E P1, X E V2}
-    # até que os cardinais de T2 e V2 não aumentem
-    T2 = []
-    V2 = []
-    V2.append(Inicial[0])
-    controle_etapa2 = 0
-    print('Exclusão símbolos inúteis, etapa 2: iteração ' + repr(controle_etapa2))
-    print('V2 = { ', end='')
-    for variavel in V2:
-        print(variavel + ' ', end='')
-    print('}')
-    print('T2 = { ', end='')
-    for terminal in T2:
-        print(variavel + ' ', end='')
-    print('}')
+    indices_inuteis = []  # lista de indices de l_Regras a serem removidos por se tratar de prods inuteis
+    vars_inuteis = [] # lista de indices de variaveis a serem removidas
+    # for ->
+    for i in range(len(Variaveis_simple)):
+        a_variavel = Variaveis_simple[i]
+        util = 0
+        for j in range(len(l_Regras_simple)):
+            if l_Regras_simple[j].var != Inicial[0]:
+                if Variaveis_simple[i] in l_Regras_simple[j].prod:
+                    util = 1
+        if util == 0: #se a variavel eh inutil, remove a regra e a variavel
+            for k in range(len(l_Regras_simple)):
+                if l_Regras_simple[k].var != Inicial[0]:
+                    if l_Regras_simple[k].var == a_variavel:
+                        indices_inuteis.append(k)
+            vars_inuteis.append(i)
+    for l in reversed(range(len(indices_inuteis))): #remove as regras inuteis de l_Regras
+        inutil = indices_inuteis[l]
+        l_Regras_simple.remove(l_Regras_simple[inutil])
+    for m in reversed(range(len(vars_inuteis))): #remove as variaveis inuteis de Variaveis
+        var_inutil = vars_inuteis[m]
+        Variaveis_simple.remove(Variaveis_simple[var_inutil])
+        Variaveis_simple.append(Inicial[0])
+def gera_var(new_var,l_var): #Gera uma nova variável que ainda não está utilizada
+    new = ''
+    for i in new_var:
+        if not(i in l_var):
+            new = i
 
-    while True:
-        contagem_inicial_T2 = len(T2)
-        contagem_inicial_V2 = len(V2)
-        for variavel in V2:
-            for regra in l_Regras_simple:
-                if regra.var == variavel:
-                    for producao in regra.prod:
-                        if producao in V1:
-                            if producao not in V2:# V2 = V2 U { A | X -> α A β E P1, X E V2}
-                                V2.append(producao)
-                        elif producao in Terminais:
-                            if producao not in T2:# T2 = T2 U { a | X -> α a β E P1, X E V2}
-                                T2.append(producao)
-        controle_etapa2 += 1
-        print('Exclusão símbolos inúteis, etapa 2: iteração ' + repr(controle_etapa2))
-        print('V2 = { ', end='')
-        for variavel in V2:
-            print(variavel + ' ', end='')
-        print('}')
-        print('T2 = { ', end='')
-        for terminal in T2:
-            print(terminal + ' ', end='')
-        print('}')
-        if contagem_inicial_V2 == len(V2) and contagem_inicial_T2 == len(T2):
-            break
-    print('Removendo regras que contém variáveis que não estão em V2')
-    #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
-    for regra in l_Regras_simple:
-        remover_regra = False
-        for prod in regra.prod:
-            if prod not in T2 and prod not in V2:
-                remover_regra = True
-        if remover_regra:
-            l_Regras_simple.remove(regra)
+    l_var.append(new)
+    return new #retorna uma variavel nova
+######FNC SEPARADO EM 3 ETAPAS ##########
+#1 - SIMPLIFICACAO = OK
+#2 - troca os terminais nao sozinhos por novas variaveis e cria nova regra contendo a variavel nova criada e o terminal substituido como producao dela
+def etapa_dois(regra, l_term, l_var, new_var): 
     
-    exibe_simplificacao()
-    print(' ')
-    print('Fim da etapa 2 da exclusão de símbolos inúteis.')
-    #---- Em V2 temos as variáveis e em T2 os terminais após as simplificações.Não manjo de python, entao vou deixar ali ----#
+    aux = ''
+    for i in range(len(regra)):
+        for j in range(len(regra[i].prod)):
+            existe = 0
+            prod_nova = []
+            if regra[i].prod[j] in l_term:
+                if len(regra[i].prod) > 1:
+                    for k in range(len(listaT)):
+                        v = listaT[k].var
+                        p = listaT[k].prod
+                        if regra[i].prod[j] in p:
+                            var_criada = v
+                            existe = 1
+                    if existe == 1:
+                        regra[i].prod[j] = var_criada
+                    else:
+                        aux = gera_var(new_var,l_var) #NOVA VARIAVEL
+                        prod_nova.append(regra[i].prod[j]) #PRODUCAO = TERMINAL
+                        aux1 = Regra(aux,prod_nova) #NOVA REGRA CRIADA
+                        regra[i].prod[j] = aux #ATUALIZA O TERMINAL
+                        listaT.append(copy.deepcopy(aux1)) #joga o terminal na listaT
+                        regra.append(aux1) #lista de regras atualizada
+    return regra
+
+def etapa_tres(regras_upd, variaveis):
+    v_nova = ''
+    n_prod = []
+    x_prod = []
+    existe1 = 0
+    existe2 = 0
+    for r in range(len(regras_upd)):
+        Regra1 = copy.deepcopy(regras_upd[r])
+        t = len(Regra1.prod) - 1
+        controle = 1
+        i = 0
+        if t > 1:
+            while i+1 != t:
+                if i+1 != t:
+                    n_prod.append(Regra1.prod[i])
+                    n_prod.append(Regra1.prod[i+1])
+                    var1 = Regra1.var
+                    indice = 0
+                    for k in range(len(listaV)):
+                        if listaV[k].prod == n_prod:
+                            indice = k
+                            existe1 = 1
+                    if existe1 == 1:
+                        x_prod.append(listaV[indice].var)
+                        for j in range(i+2,len(Regra1.prod)):
+                            x_prod.append(Regra1.prod[j])
+                        Regra1 = Regra(var1,x_prod)
+                        regras_upd.append(copy.deepcopy(Regra1))
+                    else:
+                        v_nova = gera_var(var_nova, variaveis)
+                        nova_regra0 = Regra(v_nova, n_prod)
+                        x_prod.append(v_nova)
+                        for j in range(i+2,len(Regra1.prod)):
+                            x_prod.append(Regra1.prod[j])
+                        Regra1 = Regra(Regra1.var,x_prod)
+                        regras_upd.append(copy.deepcopy(nova_regra0))
+                        regras_upd.append(copy.deepcopy(Regra1))
+                        listaV.append(copy.deepcopy(nova_regra0))
+                    t = len(Regra1.prod) - 1
+                    del x_prod[:]
+                    del n_prod[:]
+
+    excluir = []
+    for w in range(len(regras_upd)):
+        if len(regras_upd[w].prod) > 2:
+            excluir.append(w)
+        elif len(regras_upd[w].prod) == 2:
+            if regras_upd[w].prod[0] not in variaveis:
+                excluir.append(w)
+            elif regras_upd[w].prod[1] not in variaveis:
+                excluir.append(w)
+
+    n_excluidos = 0
+    for r in range(len(excluir)): #
+        if n_excluidos == 0:
+            regras_upd.remove(regras_upd[excluir[r]])
+            n_excluidos = n_excluidos + 1
+        else:
+            regras_upd.remove(regras_upd[excluir[r]-n_excluidos])
+            n_excluidos = n_excluidos + 1
+
+    return regras_upd
 
 def exibe_simplificacao():
  print('\nSimplificacao: ')
@@ -188,6 +225,14 @@ def exibe_simplificacao():
      print(' -> ', end='')
      for j in range(len(l_Regras_simple[g].prod)):
          print(l_Regras_simple[g].prod[j],end='')
+def exibe_fnc():
+    print('\nForma Normal de Chomsky: ')
+    for i in range(len(l_Regras_e3_fnc)):
+        print('')
+        print(l_Regras_e3_fnc[i].var, end='')
+        print(' -> ',end='')
+        for j in range(len(l_Regras_e3_fnc[i].prod)):
+            print(l_Regras_e3_fnc[i].prod[j],end='')
 
 def clear():
   os.system("cls")
@@ -205,13 +250,17 @@ def menu_inicial():
     clear()
     print('Modulos:\n')
     print('1 - Leitor da Gramatica')
-    print('2 - Simplificação') 
+    print('2 - Simplificação')
+    print('3- FNC')
 
     opcao_menu_inicial = str(input('Opcao: '))
     if opcao_menu_inicial == '1':
         menu_leitor()
     elif opcao_menu_inicial == '2':
         exibe_simplificacao()
+        modulos_voltar()
+    elif opcao_menu_inicial == '3':
+        exibe_fnc()
         modulos_voltar()
 
 def menu_leitor():
@@ -259,35 +308,6 @@ def menu_leitor():
     elif opcao_menu == '9':
         menu_inicial()
 
-def exibe_gramatica():
-	print('\nTerminais: ',end='')
-	for i in range(len(Terminais)):
-		if i != (len(Terminais) - 1):
-			print(Terminais[i] + ', ',end='')
-		else:
-			print(Terminais[i])
-
-	print('\nVariaveis: ',end='')
-	for i in range(len(Variaveis)):
-		if i != (len(Variaveis) - 1):
-			print(Variaveis[i] + ', ',end='')
-		else:
-			print(Variaveis[i])
-
-	print('\nSimbolo inicial: ',end='')
-	for i in range(len(Inicial)):
-		print(Inicial[i])
-
-	print('\nRegras:')
-	for i in range(len(l_Regras)):
-		variavel = l_Regras[i].var
-		producoes = l_Regras[i].prod
-		print('')
-		print(variavel,end='')
-		print(' -> ',end='')
-		for j in range(len(producoes)):
-			print(producoes[j],end='')
-	print('')
 for linha in todas_linhas:
 
     #Para a linha atual, elimina todos espaços em branco, colchetes e quebras de linha indesejadas
@@ -341,10 +361,15 @@ for linha in todas_linhas:
 #Variaveis para a simplificação
 Variaveis_simple = copy.deepcopy(Variaveis) #lista Variaveis para ser modificada apos algoritmo de simplificacao
 l_Regras_simple = copy.deepcopy(l_Regras) #lista l_Regras para ser modificada apos algoritmo de simplificacao
+var_nova = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U','X', 'Z']
+simplifica()
 
-#intro()
-#menu_inicial()
-exibe_gramatica()
-simplificacao()
+Variaveis_simplificadas = copy.deepcopy(Variaveis_simple)  # lista Variaveis para usar na funcao de FNC
+l_Regras_simplificadas = copy.deepcopy(l_Regras_simple)    # lista l_Regras para usar na funcao de FNC
+l_Regras_e2_fnc = etapa_dois(l_Regras_simplificadas, Terminais, Variaveis_simplificadas, var_nova)
+l_Regras_e3_fnc = etapa_tres(l_Regras_e2_fnc, Variaveis_simplificadas)
+l_Regras_fnc = copy.deepcopy(l_Regras_e3_fnc)
+
+menu_inicial()
+
 arq.close()
-
