@@ -85,16 +85,16 @@ def simplificacao():
     for variavel in V1:
         print(variavel)
     print('}')
-    #repita V1 = V1 U { A | A -> a E P e a E (T U V1)* } até que o cardinal de V1 não aumente
+    #repita V1 = V1 U { A | A -> α E P e α E (T U V1)* } até que o cardinal de V1 não aumente
     while True:
         contagem_inicial = len(V1)
         for variavel in Variaveis_simple: 
             if variavel not in V1:
                 for regra in l_Regras_simple:
-                    if regra.var == variavel: #A -> a E P
+                    if regra.var == variavel: #A -> α E P
                         anexar_variavel = True
                         for prod in regra.prod:
-                            if prod not in Terminais and prod not in V1:
+                            if prod not in Terminais and prod not in V1: # A -> α E (T U V1)*
                                 anexar_variavel = False
                         if anexar_variavel:
                             V1.append(variavel)
@@ -119,7 +119,22 @@ def simplificacao():
     exibe_simplificacao()
     print('Fim da etapa 1 da exclusão de símbolos inúteis.')
     #---- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial ----""
+    # T2 = {}
+    # V2 = { S }
+    # Repita: 
+    # V2 = V2 U { A | X -> α A β E P1, X E V2}
+    # T2 = T2 U { a | X -> α a β E P1, X E V2}
+    # até que os cardinais de T2 e V2 não aumentem
+    T2 = []
+    V2 = []
+    V2.append(Inicial[0])
+    while True:
+        contagem_inicial_T2 = len(T2)
+        contagem_inicial_V2 = len(V2)
 
+        #Fazer aqui a etapa 2!
+        if contagem_inicial_V2 == len(V2) and contagem_inicial_T2 == len(T2):
+        	break
 
 
 def exibe_simplificacao():
