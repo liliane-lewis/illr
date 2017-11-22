@@ -78,9 +78,9 @@ def simplificacao():
     #---- Dividido em duas etapas                         ----"
     #---- Etapa 1: qualquer variável gera terminais       ----"
     #V1 = {}
-    controleEtapa1 = 0
+    controle_etapa1 = 0
     V1 = []
-    print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controleEtapa1))
+    print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controle_etapa1))
     print('V1 = { ', end='')
     for variavel in V1:
         print(variavel)
@@ -98,8 +98,8 @@ def simplificacao():
                                 anexar_variavel = False
                         if anexar_variavel:
                             V1.append(variavel)
-        controleEtapa1 += 1
-        print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controleEtapa1))
+        controle_etapa1 += 1
+        print('Exclusão símbolos inúteis, etapa 1: iteração ' + repr(controle_etapa1))
         print('V1 = { ', end='')
         for variavel in V1:
             print(variavel + ' ', end='')
@@ -117,6 +117,7 @@ def simplificacao():
         	l_Regras_simple.remove(regra)
     
     exibe_simplificacao()
+    print(' ')
     print('Fim da etapa 1 da exclusão de símbolos inúteis.')
     #---- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial ----""
     # T2 = {}
@@ -128,14 +129,56 @@ def simplificacao():
     T2 = []
     V2 = []
     V2.append(Inicial[0])
+    controle_etapa2 = 0
+    print('Exclusão símbolos inúteis, etapa 2: iteração ' + repr(controle_etapa2))
+    print('V2 = { ', end='')
+    for variavel in V2:
+        print(variavel + ' ', end='')
+    print('}')
+    print('T2 = { ', end='')
+    for terminal in T2:
+        print(variavel + ' ', end='')
+    print('}')
+
     while True:
         contagem_inicial_T2 = len(T2)
         contagem_inicial_V2 = len(V2)
-
-        #Fazer aqui a etapa 2!
+        for variavel in V2:
+            for regra in l_Regras_simple:
+                if regra.var == variavel:
+                    for producao in regra.prod:
+                        if producao in V1:
+                            if producao not in V2:# V2 = V2 U { A | X -> α A β E P1, X E V2}
+                                V2.append(producao)
+                        elif producao in Terminais:
+                            if producao not in T2:# T2 = T2 U { a | X -> α a β E P1, X E V2}
+                                T2.append(producao)
+        controle_etapa2 += 1
+        print('Exclusão símbolos inúteis, etapa 2: iteração ' + repr(controle_etapa2))
+        print('V2 = { ', end='')
+        for variavel in V2:
+            print(variavel + ' ', end='')
+        print('}')
+        print('T2 = { ', end='')
+        for terminal in T2:
+            print(terminal + ' ', end='')
+        print('}')
         if contagem_inicial_V2 == len(V2) and contagem_inicial_T2 == len(T2):
-        	break
-
+            break
+    print('Removendo regras que contém variáveis que não estão em V2')
+    #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
+    for regra in l_Regras_simple:
+        remover_regra = False
+        for prod in regra.prod:
+            if prod not in T2 and prod not in V2:
+                remover_regra = True
+        if remover_regra:
+            l_Regras_simple.remove(regra)
+    
+    exibe_simplificacao()
+    print(' ')
+    print('Fim da etapa 2 da exclusão de símbolos inúteis.')
+    #---- Em V2 temos as variáveis e em T2 os terminais após as simplificações.Não manjo de python, entao vou deixar ali ----#
 
 def exibe_simplificacao():
  print('\nSimplificacao: ')
