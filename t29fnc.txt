@@ -1,0 +1,15 @@
+#Terminais # teste - slide 29 de FNC
+[ + ]
+[ * ]
+[ ( ]
+[ ) ]
+[ x ]
+#Variaveis
+[ E ]
+#Inicial
+[ E ]
+#Regras
+[ E ] > [ E ] [ + ] [ E ]
+[ E ] > [ E ] [ * ] [ E ]
+[ E ] > [ ( ] [ E ] [ ) ]
+[ E ] > [ x ]
