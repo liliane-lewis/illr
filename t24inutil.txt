@@ -1,0 +1,13 @@
+#Terminais # teste - simplificacao simbolos inuteis exemplo slides
+[ a ]
+[ b ]
+#Variaveis
+[ S ]
+[ A ]
+[ B ]
+#Inicial
+[ S ]
+#Regras
+[ S ] > [ A ] [ B ]
+[ S ] > [ a ]
+[ A ] > [ b ]
