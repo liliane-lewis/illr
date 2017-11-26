@@ -94,29 +94,73 @@ def simplifica():
             l_Regras_simple.remove(l_Regras_simple[regras_excluir[r]-n_excluidos])
             n_excluidos = n_excluidos + 1
     #---- Exclusão dos simbolos inúteis                   ----"
-    indices_inuteis = []  # lista de indices de l_Regras a serem removidos por se tratar de prods inuteis
-    vars_inuteis = [] # lista de indices de variaveis a serem removidas
-    # for ->
-    for i in range(len(Variaveis_simple)):
-        a_variavel = Variaveis_simple[i]
-        util = 0
-        for j in range(len(l_Regras_simple)):
-            if l_Regras_simple[j].var != Inicial[0]:
-                if Variaveis_simple[i] in l_Regras_simple[j].prod:
-                    util = 1
-        if util == 0: #se a variavel eh inutil, remove a regra e a variavel
-            for k in range(len(l_Regras_simple)):
-                if l_Regras_simple[k].var != Inicial[0]:
-                    if l_Regras_simple[k].var == a_variavel:
-                        indices_inuteis.append(k)
-            vars_inuteis.append(i)
-    for l in reversed(range(len(indices_inuteis))): #remove as regras inuteis de l_Regras
-        inutil = indices_inuteis[l]
-        l_Regras_simple.remove(l_Regras_simple[inutil])
-    for m in reversed(range(len(vars_inuteis))): #remove as variaveis inuteis de Variaveis
-        var_inutil = vars_inuteis[m]
-        Variaveis_simple.remove(Variaveis_simple[var_inutil])
-        Variaveis_simple.append(Inicial[0])
+    #---- Dividido em duas etapas                         ----"
+    #---- Etapa 1: qualquer variável gera terminais       ----"
+    #V1 = {}
+    controle_etapa1 = 0
+    V1 = []
+    #repita V1 = V1 U { A | A -> α E P e α E (T U V1)* } até que o cardinal de V1 não aumente
+    while True:
+        contagem_inicial = len(V1)
+        for variavel in Variaveis_simple: 
+            if variavel not in V1:
+                for regra in l_Regras_simple:
+                    if regra.var == variavel: #A -> α E P
+                        anexar_variavel = True
+                        for prod in regra.prod:
+                            if prod not in Terminais and prod not in V1: # A -> α E (T U V1)*
+                                anexar_variavel = False
+                        if anexar_variavel and variavel not in V1:
+                            V1.append(variavel)
+        controle_etapa1 += 1
+        if contagem_inicial == len(V1):
+            break
+    #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
+    for regra in l_Regras_simple:
+        remover_regra = False
+        for prod in regra.prod:
+            if prod not in Terminais and prod not in V1:
+                remover_regra = True
+        if remover_regra:
+            l_Regras_simple.remove(regra)
+    #---- Etapa 2: qualquer símbolo é atingível a partir do símbolo inicial ----""
+    # T2 = {}
+    # V2 = { S }
+    # Repita: 
+    # V2 = V2 U { A | X -> α A β E P1, X E V2}
+    # T2 = T2 U { a | X -> α a β E P1, X E V2}
+    # até que os cardinais de T2 e V2 não aumentem
+    T2 = []
+    V2 = []
+    V2.append(Inicial[0])
+    controle_etapa2 = 0
+
+    while True:
+        contagem_inicial_T2 = len(T2)
+        contagem_inicial_V2 = len(V2)
+        for variavel in V2:
+            for regra in l_Regras_simple:
+                if regra.var == variavel:
+                    for producao in regra.prod:
+                        if producao in V1:
+                            if producao not in V2:# V2 = V2 U { A | X -> α A β E P1, X E V2}
+                                V2.append(producao)
+                        elif producao in Terminais:
+                            if producao not in T2:# T2 = T2 U { a | X -> α a β E P1, X E V2}
+                                T2.append(producao)
+        controle_etapa2 += 1
+        if contagem_inicial_V2 == len(V2) and contagem_inicial_T2 == len(T2):
+            break
+    #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
+    for regra in l_Regras_simple:
+        remover_regra = False
+        for prod in regra.prod:
+            if prod not in T2 and prod not in V2:
+                remover_regra = True
+        if remover_regra:
+            l_Regras_simple.remove(regra)
+
+
 def gera_var(new_var,l_var): #Gera uma nova variável que ainda não está utilizada
     new = ''
     for i in new_var:
