@@ -16,6 +16,9 @@ Regras = []
 l_Regras = [] #lista de Regras criadas
 listaT = []
 listaV = []
+lR_Earley = [] #lista de ERegras para algoritmo de Earley
+EVariaveis = []
+ERegrasAtual = [] #lista CORRENTE de Regras para Algoritmo de Earley
 Estado = [] #Lista de estados Dk para Algoritmo de Earley
 x = input('Informe o nome do arquivo a ser usado\n')
 sentenca = input('Informe uma sentenca\n')
@@ -262,6 +265,170 @@ def etapa_tres(regras_upd, variaveis):
 
     return regras_upd
 
+def earley(palavra, EVariaveis):
+    del Estado[:]
+    del ERegrasAtual[:]
+    print('\nAlgoritmo de Earley: ')
+    print('\nPalavra a ser reconhecida = ', end= '')
+    print(palavra)
+    p = len (palavra) #tamanho da sentenca a ser reconhecida
+    k = p+1 #numero de estados Dk
+    n = 0 #controle de estados
+    for i in range(len(lR_Earley)): # D0 criação
+        var = lR_Earley[i].var
+        prods=lR_Earley[i].prod
+        Dk= lR_Earley[i].Dk
+        ponto = lR_Earley[i].ponto
+        e_regra = (var,prods,Dk,ponto)
+        if var == Inicial[0]:
+            ERegrasAtual.append(copy.deepcopy(e_regra))
+    Estado.append(copy.deepcopy(ERegrasAtual))
+    del ERegrasAtual[:]
+    
+    transf = []  # lista de regras a serem copiadas entre estados
+    v_predict = []  # lista de variaveis triggers para a operacao Predict
+    v_usadas_Dk = [] #lista de variaveis ja utilizadas no estado atual
+    a = 1 #controla a primeira entrada no while
+    
+    while a == 1:
+        a = a + 1
+        
+        for i in range(len(Estado)):
+            for j in range(len(Estado[i])):
+                v_usadas_Dk.append(Estado[i][j][0])  # salva todas variaveis usadas no estado em questao
+
+        # identifica todas variaveis triggers para predict
+        for i in range(len(Estado)):
+            for j in range(len(Estado[i])):
+                p = Estado[i][j][3] #recebe valor do ponto marcador
+                if p < len(Estado[i][j][1]):
+                    if Estado[i][j][1][p] in EVariaveis: #se o ponto antecede uma VARIAVEL, entao
+                        if Estado[i][j][1][p] not in v_usadas_Dk:
+                            v_predict.append(Estado[i][j][1][p]) #salva a tal variavel e, v_predict
+
+        # guarda todas regras a serem buscadas no estado anterior, ou na lista de regras inicial
+        for v in v_predict:
+            for i in range(len(lR_Earley)):
+                if v == lR_Earley[i].var:
+                    transf.append(copy.deepcopy(lR_Earley[i]))
+        if len(transf) != 0:
+            a = a - 1
+        # atualiza estado atual
+        for i in range(len(Estado)):
+            for t in range(len(transf)):
+                v = transf[t].var
+                p = transf[t].prod
+                d = transf[t].Dk
+                pt = transf[t].ponto
+                e_regra = (v,p,d,pt)
+                Estado[i].append(e_regra)
+        # zera lista de transf
+        del transf[:]
+        del v_predict[:]
+        # FIM WHILE -------------------------
+    del v_usadas_Dk[:] #zera lista de variaveis usadas no estado atual
+    reconhecimento = 1
+    ant = 0
+    letra = 0
+    scan = 0
+    predict = 1
+    complete = 1
+    l = palavra[letra]
+    while letra < len(palavra): #while começa com a primeira letra da palavra, quer criar o primeiro estado, se não conseguir criar coloca um break 
+        complete = 1
+        predict = 1
+        for j in range(len(Estado[ant])):  
+            p = Estado[ant][j][3] #indice do ponto
+            if p < len(Estado[ant][j][1]):
+                if Estado[ant][j][1][p] == l:
+                    scan = 1
+                    var = Estado[ant][j][0]
+                    prods = Estado[ant][j][1]
+                    Dk = Estado[ant][j][2]
+                    ponto = Estado[ant][j][3]
+                    pt_update = ponto + 1 #atualiza posicao do ponto (realiza o scan)
+                    e_regra = (var, prods, Dk, pt_update)
+                    ERegrasAtual.append(copy.deepcopy(e_regra))
+        if scan == 0:
+            reconhecimento = 0
+            break
+        else:
+            Estado.append(copy.deepcopy(ERegrasAtual)) 
+            del ERegrasAtual[:]
+           
+            completes_feitos = [] 
+            while complete == 1:
+                complete = 0
+                for i in range(len(Estado[letra+1])): #percorre a lista de regras do estado ATUAL
+                    p = Estado[letra+1][i][3]  # indice do ponto
+                    lim = len(Estado[letra+1][i][1]) #tamanho da producao
+                    Dk = Estado[letra+1][i][2] # estado em que a producao foi criada
+                    if p == lim: #se o ponto estiver no final da producao 
+                        if Dk not in completes_feitos:
+                            completes_feitos.append(Dk)
+                            for j in range(len(Estado[Dk])):
+                                pk = Estado[Dk][j][3] #indice do ponto
+                                if pk < len(Estado[Dk][j][1]):
+                                    vp = Estado[Dk][j][1][pk] #producao no ponto
+                                    if vp in EVariaveis:
+                                        vk = Estado[Dk][j][0] #variavel
+                                        prk = Estado[Dk][j][1] #producao
+                                        dkk = Estado[Dk][j][2] #Dk
+                                        pk = pk + 1
+                                        e_regra = (vk,prk,dkk,pk)
+                                        Estado[letra+1].append(e_regra) #atualiza estado atual
+                                        complete = 1
+            #em busca dos predicts
+            predicts_feitos = []
+            while predict == 1:
+                predict = 0
+                for i in range(len(Estado[letra+1])): 
+                    p = Estado[letra+1][i][3] 
+                    if p < len(Estado[letra+1][i][1]):
+                        var_p = Estado[letra+1][i][1][p] 
+                        if var_p in EVariaveis: 
+                            if var_p not in predicts_feitos: 
+                                predicts_feitos.append(var_p) 
+                                for j in range(len(lR_Earley)): 
+                                    if lR_Earley[j].var == var_p: 
+                                        vp = lR_Earley[j].var
+                                        pp = lR_Earley[j].prod
+                                        dkp = letra + 1 #o novo Dk da regra encontrada, será o Dk do estado atual
+                                        ptp = lR_Earley[j].ponto
+                                        e_regra = (vp,pp,dkp,ptp)
+                                        Estado[letra+1].append(e_regra) #atualiza estado atual
+                                        predict = 1
+            del predicts_feitos[:]
+            if (letra + 1) == len(palavra): #se o estado atual é o ultimo
+                for i in range(len(Estado[letra+1])):
+                    #se COMPLETE em uma producao da variavel INICIAL e ORIGINAL, reconhece a palavra
+                    if (Estado[letra+1][i][0] == Inicial[0]) and (Estado[letra+1][i][3] == len(palavra)) and (Estado[letra+1][i][2] == 0):
+                        reconhecimento = 1
+                        break
+                if reconhecimento == 0:
+                    break
+        ant = ant + 1
+        scan = 0
+        letra = letra + 1
+        if letra < len(palavra):
+            l = palavra[letra]
+
+    #FALTA  IMPRESSÃO DETALHADA DO ALGORITMO
+
+            
+    #Sinaliza se foi reconhecida ou não
+    if reconhecimento == 1:
+        print('\nA palavra ',end='')
+        print(palavra,end='')
+        print(' foi RECONHECIDA pela gramatica do arquivo.')
+    else:
+        print('\nA palavra ', end='')
+        print(palavra,end='')
+        print(' NÃO foi reconhecida pela gramatica do arquivo.')
+    
+    
+    
+
 def exibe_simplificacao():
  print('\nSimplificacao: ')
  for g in range(len(l_Regras_simple)):
@@ -277,16 +444,7 @@ def exibe_fnc():
         print(l_Regras_e3_fnc[i].var, end='')
         print(' -> ',end='')
         for j in range(len(l_Regras_e3_fnc[i].prod)):
-            print(l_Regras_e3_fnc[i].prod[j],end='')
-            
-        var = lR_Earley[i].var
-        Dk = lR_Earley[i].Dk
-        ponto = lR_Earley[i].ponto
-        e_regra = (var,prods,Dk,ponto)
-        if var == Inicial[0]:
-            ERegrasAtual.append(copy.deepcopy(e_regra))
-    Estado.append(copy.deepcopy(ERegrasAtual))
-    
+            print(l_Regras_e3_fnc[i].prod[j],end='')    
 
 def clear():
   os.system("cls")
