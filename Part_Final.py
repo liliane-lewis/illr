@@ -32,6 +32,13 @@ class Regra: #classe de Regras
     def __init__(self, variavel, producoes): #ao definir uma classe, passar como parametro a variavel e sua lista de producoes
         self.var = variavel
         self.prod = producoes
+class ERegra: #classe de Regras, para algoritmo de earley. Pode-se considerar um "filho" de Regra
+
+    def __init__(self, variavel, producoes, Dk, ponto):
+        self.var = variavel
+        self.prod = producoes
+        self.Dk = Dk
+        self.ponto = ponto
 
 def simplifica():
     #---- Ordem de simplificação                          ----"
@@ -414,26 +421,26 @@ def earley(palavra, EVariaveis):
             l = palavra[letra]
 
     #FALTA  IMPRESSÃO DETALHADA DO ALGORITMO
-	for i in range(len(Estado)): #impressão detalhada de todos os passos do Algoritmo de Earley
-        print('\nD', end='')
-        print(i, end='')
-        print(': ')
-        for j in range(len(Estado[i])):
-            trans = 0
-            print(Estado[i][j][0],end='')
-            print(' -> ',end='')
-            for p in range(len(Estado[i][j][1])):
-                lim = len(Estado[i][j][1])
-                if p == Estado[i][j][3]:
-                    print('.',end='')
-                    print(Estado[i][j][1][p], end='')
-                else:
-                    print(Estado[i][j][1][p], end='')
-                    trans = trans + 1
-                if lim == trans:
-                    print('.',end='')
-            print(' /',end='')
-            print(Estado[i][j][2])
+    for i in range(len(Estado)): #impressão detalhada de todos os passos do Algoritmo de Earley
+            print('\nD', end='')
+            print(i, end='')
+            print(': ')
+            for j in range(len(Estado[i])):
+                trans = 0
+                print(Estado[i][j][0],end='')
+                print(' -> ',end='')
+                for p in range(len(Estado[i][j][1])):
+                    lim = len(Estado[i][j][1])
+                    if p == Estado[i][j][3]:
+                        print('.',end='')
+                        print(Estado[i][j][1][p], end='')
+                    else:
+                        print(Estado[i][j][1][p], end='')
+                        trans = trans + 1
+                    if lim == trans:
+                        print('.',end='')
+                print(' /',end='')
+                print(Estado[i][j][2])
 
             
     #Sinaliza se foi reconhecida ou não
