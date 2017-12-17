@@ -21,7 +21,7 @@ EVariaveis = []
 ERegrasAtual = [] #lista CORRENTE de Regras para Algoritmo de Earley
 Estado = [] #Lista de estados Dk para Algoritmo de Earley
 x = input('Informe o nome do arquivo a ser usado\n')
-sentenca = input('Informe uma sentenca\n')
+
 
 arq = open(x, 'r')
 todas_linhas = arq.readlines() #string que contem todas as linhas do arquivo
@@ -503,6 +503,7 @@ def menu_inicial():
         exibe_fnc()
         modulos_voltar()
     elif opcao_menu_inicial == '4':
+        sentenca = input('Informe uma sentenca\n')
         earley(sentenca, EVariaveis)
         modulos_voltar()
 
