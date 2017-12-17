@@ -1,0 +1,128 @@
+<pre><div class="text_to_html">Terminais	# A secao de simbolos terminais eh a primeira do arquivo.
+[ Personagem principal chega na cidade. ]				# Tudo o que estiver apos o sustenido (#) sera considerado coment�rio
+[ Acontece um tiroteio. ]				# Os simbolos terminais sao qualquer sequencia de caracteres (nao reservados) entre colchetes.
+[ Personagem principal acaba atirando em um antigo amigo. ]				# A secao de simbolos terminais inicia com a palavra-chave "Terminais"
+[ Personagem principal e o unico sobrevivente do tiroteio. ]					# Eh altamente recomendavel que simbolos terminais iniciem por caracteres min�sculos
+[ Personagem principal mata todos os bandidos. ]					# Simbolos nao podem conter os caracteres por serem caracteres reservados
+[ Personagem principal enterra seu amigo. ]				# Apesar disso, eles podem conter outros caracteres especiais e espacos tambem.
+[ Todos os moradores da cidade estao mortos. ]					# Normalmente sera necessario apenas um caractere minusculo para definir um simbolo terminal.
+[ Cheio de remorso, o personagem principal vai para outra cidade. ]					# O uso dos espacos eh fundamental. Os colchetes devem ser separados do simbolo por espacos.
+[ A cidade esta deserta. ]
+[ Personagem principal encontra uma pessoa misteriosa. ]
+[ Admirados, os moradores da cidade elegem o personagem principal como xerife. ]
+[ Apos alguns meses, a cidade e atacada. Porem, apos uma longa e feroz batalha, o xerife sai vitorioso. ]
+[ Uma pessoa e assassinada na cidade. Apos uma longa investigacao, o xerife encontra o culpado. ]
+[ O personagem principal se apaixona e decide trocar a vida de violencia por uma tranquila. ]
+[ Ocorre um duelo entre o personagem principal e o assassino. ]
+[ Apos algum tempo, a pessoa misteriosa revela ser alguem do passado do personagem principal. ]
+[ A pessoa misteriosa utiliza sua influencia sobre o personagem principal para convence-lo a virar um criminoso. ]
+[ O personagem principal e a pessoa misteriosa assaltam um banco. ]
+[ A pessoa misteriosa conta ao personagem principal quem matou sua familia muitos anos atras. ]
+[ O personagem principal decide buscar vinganca. ]
+[ O personagem principal constroi uma cabana e cria uma familia. Ele passa o resto de seus dias tranquilo e feliz. ]
+[ O personagem principal e baleado e morre em uma cena emocionante. ]
+[ Vitorioso, o personagem principal mata o assassino. ]
+Variaveis				# A secao de variaveis inicia pela palavra reservada "Variaveis", e eh a segunda do arquivo
+[ inicio1 ]					# Eh muito importante respeitar a ordem das secoes
+[ inicio2 ]					# Note que a sintaxe eh case-sensitive, isto eh, maiusculas e minusculas sao diferenciadas
+[ inicio3 ]					# Simbolos variaveis sao qualquer conjunto de caracteres nao reservados entre colchetes.
+[ inicio4 ]					# Sugere-se evitar o uso de acentos para que o uso em outras plataformas nao corrompa o arquivo.
+[ inicio5 ]
+[ inicio6 ]
+[ inicio7 ]
+[ inicio8 ]
+[ inicio9 ]
+[ inicio10 ]
+[ meio1 ]
+[ meio2 ]
+[ meio3 ]
+[ meio4 ]
+[ meio5 ]
+[ meio6 ]
+[ meio7 ]
+[ meio8 ]
+[ meio9 ]
+[ meio10 ]
+[ final1 ]
+[ final2 ]
+[ final3 ]
+[ IA ]
+[ IB ]
+[ IC ]
+[ ID ]
+[ IE ]
+[ IF ]
+[ IG ]
+[ IH ]
+[ II ]
+[ IJ ]
+[ MA ]
+[ MB ]
+[ MC ]
+[ MD ]
+[ ME ]
+[ MF ]
+[ MG ]
+[ MH ]
+[ MI ]
+[ MJ ]
+[ FA ]
+[ FB ]
+[ FC ]
+Inicial					# O simbolo inicial possui uma secao propria, iniciada pela palavra "Inicial"
+[ inicio1 ]					# Essa secao possui apenas uma linha com o simbolo inicial entre colchetes.
+Regras					# A ultima secao vem encabecada pela palavra-chave "Regras"
+[ inicio1 ]	> [ IA ] [ inicio2 ] ;1.00	# Nas regras de producao, coloca-se o simbolo da esquerda entre colchetes antes
+[ inicio1 ]	> [ IA ] [ inicio9 ] ;1.00		# do simbolo de ">", que representa a derivacao.
+[ inicio2 ]	> [ IB ] [ inicio3 ] ;1.00			# Os simbolos da direita devem estar cada um entre colchetes e separados por espacos,
+[ inicio2 ]	> [ IB ] [ inicio4 ] ;1.00			# a fim de definir-se a fronteira entre dois simbolos.
+[ inicio2 ]	> [ IB ] [ inicio5 ] ;1.00		# As regras de producao devem seguir as restricoes de uma GLC.
+[ inicio3 ]	> [ IC ] [ inicio6 ] ;1.00	# Linhas em branco entre as secoes e entre os itens nao serao toleradas.
+[ inicio4 ]	> [ ID ] [ inicio7 ] ;1.00
+[ inicio5 ]	> [ IE ] [ meio1 ] ;1.00
+[ inicio6 ]	> [ IF ] [ inicio8 ] ;1.00
+[ inicio7 ]	> [ IG ] [ inicio9 ] ;1.00
+[ inicio8 ]	> [ IH ] [ inicio9 ] ;1.00
+[ inicio9 ]	> [ II ] [ inicio10 ] ;1.00
+[ inicio10 ] > [ IJ ] [ meio6 ] ;1.00
+[ meio1 ] > [ MA ] [ meio2 ] ;1.00
+[ meio1 ] > [ MA ] [ meio3 ] ;1.00
+[ meio2 ] > [ MB ] [ meio4 ] ;1.00
+[ meio3 ] > [ MC ] [ meio5 ] ;1.00
+[ meio4 ] > [ MD ] [ final1 ] ;1.00
+[ meio5 ] > [ ME ] [ final2 ] ;1.00
+[ meio5 ] > [ ME ] [ final3 ] ;1.00
+[ meio6 ] > [ MF ] [ meio7 ] ;1.00
+[ meio6 ] > [ MF ] [ meio9 ] ;1.00
+[ meio7 ] > [ MG ] [ meio8 ] ;1.00
+[ meio8 ] > [ MH ] [ meio4 ] ;1.00
+[ meio8 ] > [ MH ] [ final2 ] ;1.00
+[ meio9 ] > [ MI ] [ meio10 ] ;1.00
+[ meio10 ] > [ MJ ] [ meio5 ] ;1.00
+[ final1 ] > [ FA ] ;1.00
+[ final2 ] > [ FB ] ;1.00
+[ final3 ] > [ FC ] ;1.00
+[ IA ] > [ Personagem principal chega na cidade. ] ;1.00
+[ IB ] > [ Acontece um tiroteio. ] ;1.00
+[ IC ] > [ Personagem principal acaba atirando em um antigo amigo. ] ;1.00
+[ ID ] > [ Personagem principal e o unico sobrevivente do tiroteio. ] ;1.00
+[ IE ] > [ Personagem principal mata todos os bandidos. ] ;1.00
+[ IF ] > [ Personagem principal enterra seu amigo. ] ;1.00
+[ IG ] > [ Todos os moradores da cidade estao mortos. ] ;1.00
+[ IH ] > [ Cheio de remorso, o personagem principal vai para outra cidade. ] ;1.00
+[ II ] > [ A cidade esta deserta. ] ;1.00
+[ IJ ] > [ Personagem principal encontra uma pessoa misteriosa. ] ;1.00
+[ MA ] > [ Admirados, os moradores da cidade elegem o personagem principal como xerife. ] ;1.00
+[ MB ] > [ Apos alguns meses, a cidade e atacada. Porem, apos uma longa e feroz batalha, o xerife sai vitorioso. ] ;1.00
+[ MC ] > [ Uma pessoa e assassinada na cidade. Apos uma longa investigacao, o xerife encontra o culpado. ] ;1.00
+[ MD ] > [ O personagem principal se apaixona e decide trocar a vida de violencia por uma tranquila. ] ;1.00
+[ ME ] > [ Ocorre um duelo entre o personagem principal e o assassino. ] ;1.00
+[ MF ] > [ Apos algum tempo, a pessoa misteriosa revela ser alguem do passado do personagem principal. ] ;1.00
+[ MG ] > [ A pessoa misteriosa utiliza sua influencia sobre o personagem principal para convence-lo a virar um criminoso. ] ;1.00
+[ MH ] > [ O personagem principal e a pessoa misteriosa assaltam um banco. ] ;1.00
+[ MI ] > [ A pessoa misteriosa conta ao personagem principal quem matou sua familia muitos anos atras. ] ;1.00
+[ MJ ] > [ O personagem principal decide buscar vinganca. ] ;1.00
+[ FA ] > [ O personagem principal constroi uma cabana e cria uma familia. Ele passa o resto de seus dias tranquilo e feliz. ] ;1.00
+[ FB ] > [ O personagem principal e baleado e morre em uma cena emocionante. ] ;1.00
+[ FC ] > [ Vitorioso, o personagem principal mata o assassino. ] ;1.00
+</div></pre>

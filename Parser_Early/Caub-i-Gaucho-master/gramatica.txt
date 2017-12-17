@@ -1,0 +1,52 @@
+inicio1 - IA inicio2 | IA in’cio9
+inicio2 - IB inicio3 | IB in’cio4 | IB in’cio5
+inicio3 - IC inicio6
+inicio4 - ID inicio7
+inicio5 - IE meio1
+inicio6 - IF inicio8
+inicio7 - IG inicio9
+inicio8 - IH inicio9
+inicio9 - II inicio10
+inicio10 - IJ meio6
+
+meio1 - MA meio2 | MA meio3
+meio2 - MB meio4
+meio3 - MC meio5
+meio4 - MD final1
+meio5 - ME final2 | ME final3
+meio6 - MF meio7 | MF meio9
+meio7 - MG meio8
+meio8 - MH meio4 | MH final2
+meio9 - MI meio10
+meio10 - MJ meio5
+
+final1 - FA 
+final2 - FB 
+final3 - FC
+
+
+IA - Personagem principal chega na cidade.
+IB - Acontece um tiroteio.
+IC - Personagem principal acaba atirando em um antigo amigo.
+ID - Personagem principal Ž o œnico sobrevivente do tiroteio.
+IE - Personagem principal mata todos os bandidos.
+IF - Personagem principal enterra seu amigo.
+IG - Todos os moradores da cidade est‹o mortos.
+IH - Cheio de remorso, o personagem principal vai para outra cidade.
+II - A cidade est‡ deserta.
+IJ - Personagem principal encontra uma pessoa misteriosa.
+
+MA - Admirados, os moradores da cidade elegem o personagem principal como xerife.
+MB - Ap—s alguns meses, a cidade Ž atacada. PorŽm, ap—s uma longa e feroz batalha, o xerife sai vitorioso.
+MC - Uma pessoa Ž assassinada na cidade. Ap—s uma longa investiga‹o, o xerife encontra o culpado.
+MD - O personagem principal se apaixona e decide trocar a vida de violncia por uma tranquila.
+ME - Ocorre um duelo entre o personagem principal e o assassino.
+MF - Ap—s algum tempo, a pessoa misteriosa revela ser alguŽm do passado do personagem principal.
+MG - A pessoa misteriosa utiliza sua influncia sobre o personagem principal para convenc-lo a virar um criminoso.
+MH - O personagem principal e a pessoa misteriosa assaltam um banco.
+MI - A pessoa misteriosa conta ao personagem principal quem matou sua fam’lia muitos anos atr‡s.
+MJ - O personagem principal decide buscar vingana.
+
+FA - O personagem principal constr—i uma cabana e cria uma fam’lia. Ele passa o resto de seus dias tranquilo e feliz.
+FB - O personagem principal Ž baleado e morre em uma cena emocionante.
+FC - Vitorioso, o personagem principal mata o assassino.
