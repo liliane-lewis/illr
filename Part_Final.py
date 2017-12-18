@@ -8,6 +8,16 @@ import sys, os, re
 #import msvcrt 
 import copy
 
+cores = {'vermelho':'\033[31m',
+        'verde':'\033[32m',
+        'azul':'\033[1;34m',
+        'ciano':'\033[36m',
+        'magenta':'\033[35m',
+        'amarelo':'\033[33m',
+        'preto':'\033[30m',
+        'branco':'\033[37m',
+        'limpa':'\033[m'}
+
 
 Terminais = []
 Variaveis = []
@@ -498,11 +508,11 @@ def modulos_voltar():
 
 def menu_inicial():
     clear()
-    print('Modulos:\n')
+    print('{}Modulos:{}'.format(cores['azul'], cores['ciano']))
     print('1 - Leitor da Gramatica')
     print('2 - Simplificação')
     print('3- FNC')
-    print('4- Parser, Earley')
+    print('4- Parser, Earley{}'.format(cores['limpa']))
 
     opcao_menu_inicial = str(input('Opcao: '))
     if opcao_menu_inicial == '1':
@@ -520,14 +530,15 @@ def menu_inicial():
 
 def menu_leitor():
     clear()
-    print('Opcoes de exibicao:\n')
-    print('Terminais: 1')
-    print('Variaveis: 2')
-    print('Simbolo inicial: 3')
-    print('Regras de producao: 4\n')
-    print('9 para voltar ou qualquer tecla para sair')
+    print('{}Opcoes de exibicao:{}'.format(cores['azul'],cores['ciano']))
+    print('1 - Terminais')
+    print('2 - Variaveis')
+    print('3 - Simbolo inicial')
+    print('4 - Regras de producao')
+    print('9 - Voltar')
+    print('Qualquer tecla para sair\n{}'.format(cores['limpa']))
 
-    opcao_menu = str(input('\nOpcao: '))
+    opcao_menu = str(input('Opcao: '))
     if opcao_menu == '1':
         print('\nTerminais: ',end='')
         for i in range(len(Terminais)):
