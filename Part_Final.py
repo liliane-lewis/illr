@@ -10,12 +10,13 @@ import copy
 
 cores = {'vermelho':'\033[31m',
         'verde':'\033[32m',
-        'azul':'\033[1;34m',
+        'azul':'\033[1;34m', #e negrito
         'ciano':'\033[36m',
         'magenta':'\033[35m',
         'amarelo':'\033[33m',
         'preto':'\033[30m',
         'branco':'\033[37m',
+        'negrito':'\033[1;m',
         'limpa':'\033[m'}
 
 
@@ -495,7 +496,7 @@ def exibe_fnc():
             print(l_Regras_e3_fnc[i].prod[j],end='')    
 
 def clear():
-  os.system("cls")
+    os.system(['clear', 'cls'][os.name == 'nt'])
 def voltar():
     voltar = str(input('\n\nTecle 9 para voltar ou qualquer tecla para sair: '))
     if voltar == '9':
@@ -508,13 +509,14 @@ def modulos_voltar():
 
 def menu_inicial():
     clear()
-    print('{}Modulos:{}'.format(cores['azul'], cores['ciano']))
+    print('\n{}-=-=-=-= {}MODULOS{} =-=-=-=-{}{}'.format(cores['amarelo'], cores['azul'], cores['amarelo'], cores['ciano'], cores['limpa']))
     print('1 - Leitor da Gramatica')
     print('2 - Simplificação')
-    print('3- FNC')
-    print('4- Parser, Earley{}'.format(cores['limpa']))
+    print('3 - FNC')
+    print('4 - Parser, Earley{}'.format(cores['limpa']))
+    print('{}-=-=-=-=-=-=-=-=-=-=-=-=-{}'.format(cores['amarelo'], cores['limpa']))
 
-    opcao_menu_inicial = str(input('Opcao: '))
+    opcao_menu_inicial = str(input('{}Opcao: {}'.format(cores['azul'], cores['limpa'])))
     if opcao_menu_inicial == '1':
         menu_leitor()
     elif opcao_menu_inicial == '2':
@@ -524,21 +526,22 @@ def menu_inicial():
         exibe_fnc()
         modulos_voltar()
     elif opcao_menu_inicial == '4':
-        sentenca = input('Informe uma sentenca\n')
+        sentenca = input('\n{}Informe uma sentenca: \n{}'.format(cores['vermelho'], cores['limpa']))
         earley(sentenca, EVariaveis)
         modulos_voltar()
 
 def menu_leitor():
     clear()
-    print('{}Opcoes de exibicao:{}'.format(cores['azul'],cores['ciano']))
+    print('\n{}-=-=-=-= {}EXIBIR{} =-=-=-=-{}{}'.format(cores['amarelo'], cores['azul'], cores['amarelo'], cores['ciano'], cores['limpa']))
     print('1 - Terminais')
     print('2 - Variaveis')
     print('3 - Simbolo inicial')
     print('4 - Regras de producao')
     print('9 - Voltar')
     print('Qualquer tecla para sair\n{}'.format(cores['limpa']))
+    print('{}-=-=-=-=-=-=-=-=-=-=-=-=-{}'.format(cores['amarelo'], cores['limpa']))
 
-    opcao_menu = str(input('Opcao: '))
+    opcao_menu = str(input('{}Opcao: {}'.format(cores['azul'], cores['limpa'])))
     if opcao_menu == '1':
         print('\nTerminais: ',end='')
         for i in range(len(Terminais)):
