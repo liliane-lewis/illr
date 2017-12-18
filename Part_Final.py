@@ -71,7 +71,8 @@ def simplifica():
             else:
                 l_Regras_simple.remove(l_Regras_simple[j])
                 cont_removidos =cont_removidos + 1
-                
+
+
     for i in range(len(l_Regras_simple)):
         for j in range(len(Prod_vazias)):
             if Prod_vazias[j] in l_Regras_simple[i].prod:
@@ -81,7 +82,7 @@ def simplifica():
                     regra_nova = Regra(l_Regras_simple[i].var,prod_nova)
                     if regra_nova not in l_Regras_simple:
                         l_Regras_simple.append(regra_nova)
-    
+
     #---- Exclusão das produções que substituem variáveis ----"
     for i in range(len(l_Regras_simple)):
         if len(l_Regras_simple[i].prod) == 1:
@@ -163,14 +164,23 @@ def simplifica():
         if contagem_inicial_V2 == len(V2) and contagem_inicial_T2 == len(T2):
             break
     #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
-    for regra in l_Regras_simple:
+    regrasPreSimplex = copy.deepcopy(l_Regras_simple)
+    l_Regras_simple.clear()
+
+    for regra in regrasPreSimplex:
         remover_regra = False
+        if regra.var not in V2:
+            remover_regra = True
+        
         for prod in regra.prod:
             if prod not in T2 and prod not in V2:
                 remover_regra = True
-        if remover_regra:
-            l_Regras_simple.remove(regra)
+        if not remover_regra:
+            l_Regras_simple.append(regra)
 
+
+    listaT = copy.deepcopy(T2)
+    listaV = copy.deepcopy(V2)
 
 def gera_var(new_var,l_var): #Gera uma nova variável que ainda não está utilizada
     new = ''
@@ -221,7 +231,7 @@ def etapa_tres(regras_upd, variaveis):
         controle = 1
         i = 0
         if t > 1:
-            while i+1 != t:
+            #while i+1 != t:
                 if i+1 != t:
                     n_prod.append(Regra1.prod[i])
                     n_prod.append(Regra1.prod[i+1])
@@ -281,6 +291,7 @@ def earley(palavra, EVariaveis):
     p = len (palavra) #tamanho da sentenca a ser reconhecida
     k = p+1 #numero de estados Dk
     n = 0 #controle de estados
+    
     for i in range(len(lR_Earley)): # D0 criação
         var = lR_Earley[i].var
         prods=lR_Earley[i].prod
