@@ -1,0 +1,186 @@
+def earley(palavra, EVariaveis):
+    del Estado[:]
+    del ERegrasAtual[:]
+    print('\nAlgoritmo de Earley:')
+    print('\nPalavra a ser reconhecida = ',end='')
+    print(palavra)
+    p = len(palavra) #tamanho da palavra
+    k = p+1 #numero de estados Dk
+    n = 0 #controle de estados
+
+    for i in range(len(l_Regras_Earley)): #Operation Initial in D0
+        var = l_Regras_Earley[i].var
+        prods = l_Regras_Earley[i].prod
+        Dk = l_Regras_Earley[i].Dk
+        ponto = l_Regras_Earley[i].ponto
+        e_regra = (var,prods,Dk,ponto)
+        if var == Inicial[0]:
+            ERegrasAtual.append(copy.deepcopy(e_regra))
+    Estado.append(copy.deepcopy(ERegrasAtual))
+    del ERegrasAtual[:]
+
+    transf = []  # lista de regras a serem copiadas entre estados
+    v_predict = []  # lista de variaveis triggers para a operacao Predict
+    v_usadas_Dk = [] #lista de variaveis ja utilizadas no estado atual
+    a = 1 #controla a primeira entrada no while
+
+    # D0 pronto!
+    while a == 1:
+        a = a + 1
+        # identifica todas variaveis que ja estao ativas no estado atual
+        for i in range(len(Estado)):
+            for j in range(len(Estado[i])):
+                v_usadas_Dk.append(Estado[i][j][0])  # salva todas variaveis usadas no estado em questao
+
+        # identifica todas variaveis triggers para predict
+        for i in range(len(Estado)):
+            for j in range(len(Estado[i])):
+                p = Estado[i][j][3] #recebe valor do ponto marcador
+                if p < len(Estado[i][j][1]):
+                    if Estado[i][j][1][p] in EVariaveis: #se o ponto antecede uma VARIAVEL, entao
+                        if Estado[i][j][1][p] not in v_usadas_Dk:
+                            v_predict.append(Estado[i][j][1][p]) #salva a tal variavel e, v_predict
+
+        # guarda todas regras a serem buscadas no estado anterior, ou na lista de regras inicial
+        for v in v_predict:
+            for i in range(len(l_Regras_Earley)):
+                if v == l_Regras_Earley[i].var:
+                    transf.append(copy.deepcopy(l_Regras_Earley[i]))
+        if len(transf) != 0:
+            a = a - 1
+        # atualiza estado atual
+        for i in range(len(Estado)):
+            for t in range(len(transf)):
+                v = transf[t].var
+                p = transf[t].prod
+                d = transf[t].Dk
+                pt = transf[t].ponto
+                e_regra = (v,p,d,pt)
+                Estado[i].append(e_regra)
+
+        # zera lista de transf
+        del transf[:]
+        del v_predict[:]
+        # FIM WHILE -------------------------
+    del v_usadas_Dk[:] #zera lista de variaveis usadas no estado atual
+
+    reconhecimento = 1
+    ant = 0
+    letra = 0
+    scan = 0
+    predict = 1
+    complete = 1
+    l = palavra[letra]
+    while letra < len(palavra):
+        complete = 1
+        predict = 1
+        #while começa com a primeira letra da palavra
+        #e com intuito de criar o primeiro estado
+        #se não conseguir gerar um scan, break
+        for j in range(len(Estado[ant])):  # varre o estado anterior em busca de um scan
+            p = Estado[ant][j][3] #indice do ponto
+            if p < len(Estado[ant][j][1]):
+                if Estado[ant][j][1][p] == l:
+                    scan = 1
+                    var = Estado[ant][j][0]
+                    prods = Estado[ant][j][1]
+                    Dk = Estado[ant][j][2]
+                    ponto = Estado[ant][j][3]
+                    pt_update = ponto + 1 #atualiza posicao do ponto (realiza o scan)
+                    e_regra = (var, prods, Dk, pt_update)
+                    ERegrasAtual.append(copy.deepcopy(e_regra))
+        if scan == 0:
+            reconhecimento = 0
+            break
+        else:
+            Estado.append(copy.deepcopy(ERegrasAtual)) #a partir daqui, o estado NOVO foi CRIADO (Estado[letra+1])
+            del ERegrasAtual[:]
+
+            #em busca dos completes
+            completes_feitos = [] #guarda os Dk's nos quais foram puxados os completes
+            while complete == 1:
+                complete = 0
+                for i in range(len(Estado[letra+1])): #percorre a lista de regras do estado ATUAL
+                    p = Estado[letra+1][i][3]  # indice do ponto
+                    lim = len(Estado[letra+1][i][1]) #tamanho da producao
+                    Dk = Estado[letra+1][i][2] # estado em que a producao foi criada
+                    if p == lim: #se o ponto estiver no final da producao (gera complete)
+                        if Dk not in completes_feitos:
+                            completes_feitos.append(Dk)
+                            for j in range(len(Estado[Dk])):
+                                pk = Estado[Dk][j][3] #indice do ponto
+                                if pk < len(Estado[Dk][j][1]):
+                                    vp = Estado[Dk][j][1][pk] #producao no ponto
+                                    if vp in EVariaveis:
+                                        vk = Estado[Dk][j][0] #variavel
+                                        prk = Estado[Dk][j][1] #producao
+                                        dkk = Estado[Dk][j][2] #Dk
+                                        pk = pk + 1
+                                        e_regra = (vk,prk,dkk,pk)
+                                        Estado[letra+1].append(e_regra) #atualiza estado atual
+                                        complete = 1
+            #em busca dos predicts
+            predicts_feitos = []
+            while predict == 1:
+                predict = 0
+                for i in range(len(Estado[letra+1])): #percorre a lista de regras do estado ATUAL
+                    p = Estado[letra+1][i][3] #indice do ponto
+                    if p < len(Estado[letra+1][i][1]):
+                        var_p = Estado[letra+1][i][1][p] #producao no ponto
+                        if var_p in EVariaveis: #se o ponto esta numa variavel
+                            if var_p not in predicts_feitos: #e se ja nao foi feito esse predict
+                                predicts_feitos.append(var_p) #guarda a variavel como predict feito
+                                for j in range(len(l_Regras_Earley)): #busca nas regras originais
+                                    if l_Regras_Earley[j].var == var_p: #se a regra condiz com o predict
+                                        vp = l_Regras_Earley[j].var
+                                        pp = l_Regras_Earley[j].prod
+                                        dkp = letra + 1 #o novo Dk da regra encontrada, será o Dk do estado atual
+                                        ptp = l_Regras_Earley[j].ponto
+                                        e_regra = (vp,pp,dkp,ptp)
+                                        Estado[letra+1].append(e_regra) #atualiza estado atual
+                                        predict = 1
+            del predicts_feitos[:]
+            if (letra + 1) == len(palavra): #se o estado atual é o ultimo
+                for i in range(len(Estado[letra+1])):
+                    #se COMPLETE em uma producao da variavel INICIAL e ORIGINAL, reconhece a palavra
+                    if (Estado[letra+1][i][0] == Inicial[0]) and (Estado[letra+1][i][3] == len(palavra)) and (Estado[letra+1][i][2] == 0):
+                        reconhecimento = 1
+                        break
+                if reconhecimento == 0:
+                    break
+        ant = ant + 1
+        scan = 0
+        letra = letra + 1
+        if letra < len(palavra):
+            l = palavra[letra]
+
+
+    for i in range(len(Estado)): #impressão detalhada de todos os passos do Algoritmo de Earley
+        print('\nD', end='')
+        print(i, end='')
+        print(': ')
+        for j in range(len(Estado[i])):
+            trans = 0
+            print(Estado[i][j][0],end='')
+            print(' -> ',end='')
+            for p in range(len(Estado[i][j][1])):
+                lim = len(Estado[i][j][1])
+                if p == Estado[i][j][3]:
+                    print('.',end='')
+                    print(Estado[i][j][1][p], end='')
+                else:
+                    print(Estado[i][j][1][p], end='')
+                    trans = trans + 1
+                if lim == trans:
+                    print('.',end='')
+            print(' /',end='')
+            print(Estado[i][j][2])
+
+    if reconhecimento == 1:
+        print('\nA palavra ',end='')
+        print(palavra,end='')
+        print(' foi RECONHECIDA pela gramatica do arquivo.')
+    else:
+        print('\nA palavra ', end='')
+        print(palavra,end='')
+        print(' NÃO foi reconhecida pela gramatica do arquivo.')
