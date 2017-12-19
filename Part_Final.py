@@ -8,6 +8,16 @@ import sys, os, re
 #import msvcrt 
 import copy
 
+cores = {'vermelho':'\033[31m',
+        'verde':'\033[32m',
+        'azul':'\033[1;34m',
+        'ciano':'\033[36m',
+        'magenta':'\033[35m',
+        'amarelo':'\033[33m',
+        'preto':'\033[30m',
+        'branco':'\033[37m',
+        'limpa':'\033[m'}
+
 
 Terminais = []
 Variaveis = []
@@ -71,7 +81,8 @@ def simplifica():
             else:
                 l_Regras_simple.remove(l_Regras_simple[j])
                 cont_removidos =cont_removidos + 1
-                
+
+
     for i in range(len(l_Regras_simple)):
         for j in range(len(Prod_vazias)):
             if Prod_vazias[j] in l_Regras_simple[i].prod:
@@ -81,7 +92,7 @@ def simplifica():
                     regra_nova = Regra(l_Regras_simple[i].var,prod_nova)
                     if regra_nova not in l_Regras_simple:
                         l_Regras_simple.append(regra_nova)
-    
+
     #---- Exclusão das produções que substituem variáveis ----"
     for i in range(len(l_Regras_simple)):
         if len(l_Regras_simple[i].prod) == 1:
@@ -163,14 +174,23 @@ def simplifica():
         if contagem_inicial_V2 == len(V2) and contagem_inicial_T2 == len(T2):
             break
     #---- Após obter o novo conjunto de variáveis, remover as regras que não serão mais utilizadas ----#
-    for regra in l_Regras_simple:
+    regrasPreSimplex = copy.deepcopy(l_Regras_simple)
+    l_Regras_simple.clear()
+
+    for regra in regrasPreSimplex:
         remover_regra = False
+        if regra.var not in V2:
+            remover_regra = True
+        
         for prod in regra.prod:
             if prod not in T2 and prod not in V2:
                 remover_regra = True
-        if remover_regra:
-            l_Regras_simple.remove(regra)
+        if not remover_regra:
+            l_Regras_simple.append(regra)
 
+
+    listaT = copy.deepcopy(T2)
+    listaV = copy.deepcopy(V2)
 
 def gera_var(new_var,l_var): #Gera uma nova variável que ainda não está utilizada
     new = ''
@@ -221,7 +241,7 @@ def etapa_tres(regras_upd, variaveis):
         controle = 1
         i = 0
         if t > 1:
-            while i+1 != t:
+            #while i+1 != t:
                 if i+1 != t:
                     n_prod.append(Regra1.prod[i])
                     n_prod.append(Regra1.prod[i+1])
@@ -281,6 +301,7 @@ def earley(palavra, EVariaveis):
     p = len (palavra) #tamanho da sentenca a ser reconhecida
     k = p+1 #numero de estados Dk
     n = 0 #controle de estados
+    
     for i in range(len(lR_Earley)): # D0 criação
         var = lR_Earley[i].var
         prods=lR_Earley[i].prod
@@ -487,11 +508,11 @@ def modulos_voltar():
 
 def menu_inicial():
     clear()
-    print('Modulos:\n')
+    print('{}Modulos:{}'.format(cores['azul'], cores['ciano']))
     print('1 - Leitor da Gramatica')
     print('2 - Simplificação')
     print('3- FNC')
-    print('4- Parser, Earley')
+    print('4- Parser, Earley{}'.format(cores['limpa']))
 
     opcao_menu_inicial = str(input('Opcao: '))
     if opcao_menu_inicial == '1':
@@ -509,14 +530,15 @@ def menu_inicial():
 
 def menu_leitor():
     clear()
-    print('Opcoes de exibicao:\n')
-    print('Terminais: 1')
-    print('Variaveis: 2')
-    print('Simbolo inicial: 3')
-    print('Regras de producao: 4\n')
-    print('9 para voltar ou qualquer tecla para sair')
+    print('{}Opcoes de exibicao:{}'.format(cores['azul'],cores['ciano']))
+    print('1 - Terminais')
+    print('2 - Variaveis')
+    print('3 - Simbolo inicial')
+    print('4 - Regras de producao')
+    print('9 - Voltar')
+    print('Qualquer tecla para sair\n{}'.format(cores['limpa']))
 
-    opcao_menu = str(input('\nOpcao: '))
+    opcao_menu = str(input('Opcao: '))
     if opcao_menu == '1':
         print('\nTerminais: ',end='')
         for i in range(len(Terminais)):
